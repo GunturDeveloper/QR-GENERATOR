@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Kode QR</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Generator Kode QR</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" id="text" class="form-control" placeholder="Masukkan teks atau link">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="generateQRCode()">Generate Kode QR</button>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-4">
+            <div id="qrcode" class="d-flex justify-content-center"></div>
+        </div>
+
+        <div class="row justify-content-center mt-3">
+            <button class="btn btn-success" onclick="downloadQR()">Unduh Kode QR sebagai PNG</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Peringatan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Silakan generate Kode QR terlebih dahulu sebelum mengunduh.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Generator Script -->
+    <script>
+        let qrCode;
+
+        function generateQRCode() {
+            const text = document.getElementById("text").value;
+            if (!qrCode) {
+                qrCode = new QRCode(document.getElementById("qrcode"), {
+                    text: text,
+                    width: 200,
+                    height: 200,
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } else {
+                qrCode.clear();
+                qrCode.makeCode(text);
+            }
+        }
+
+        function downloadQR() {
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            if (qrCanvas) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = qrCanvas.toDataURL('image/png');
+                link.click();
+            } else {
+                $('#qrModal').modal('show');  // Tampilkan modal jika QR belum digenerate
+            }
+        }
+    </script>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
